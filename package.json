@@ -1,0 +1,16 @@
+{
+  "name": "Echelons",
+  "description": "An elo ranking app for use with friendly sports or games.",
+  "version": "0.0.1",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "jade": "*",
+    "mongodb": "*",
+    "mongoose": "*"
+  }
+}
