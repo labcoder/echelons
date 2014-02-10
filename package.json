@@ -2,6 +2,8 @@
   "name": "Echelons",
   "description": "An elo ranking app for use with friendly sports or games.",
   "version": "0.0.1",
+  "author": "Oscar Sanchez",
+  "license": "MIT",
   "private": true,
   "main": "app.js",
   "scripts": {
