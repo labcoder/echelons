@@ -13,6 +13,7 @@
     "express": "*",
     "jade": "*",
     "mongodb": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "twilio": "*"
   }
 }
