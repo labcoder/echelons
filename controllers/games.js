@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var games = require('../routes/games');
 var Game = require('../models/game');
 module.exports.controller = function(app) {
 
@@ -40,7 +39,7 @@ module.exports.controller = function(app) {
   });
   
   /**
-   * PUT /games/:id - update a game
+   * PUT /games/:name - update a game
    */
   app.put('/games/:name', function(req, res) {
     Game.findOneAndUpdate({name: req.params.name}, req.body, function(err, game) {
@@ -49,9 +48,9 @@ module.exports.controller = function(app) {
   });
 
   /**
-   * DELETE /games/:id - delete a game
+   * DELETE /games/:name - delete a game
    */
-  app.delete('/games/:id', function(req, res) {
+  app.delete('/games/:name', function(req, res) {
     Game.findOneAndRemove({name: req.params.name}, function(err, game) {
       return res.send(err ? err : game);
     });
