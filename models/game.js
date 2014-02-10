@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var gameSchema = new mongoose.Schema({
-  name: String,
+  name: {type: String, index: {unique: true}},
+  friendlyName: String,
   phone: String
 });
 var Game = mongoose.model('game', gameSchema);

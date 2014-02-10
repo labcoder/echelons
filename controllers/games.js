@@ -8,11 +8,7 @@ module.exports.controller = function(app) {
    */
   app.get('/games', function(req, res) {
     Game.find(function(err, games) {
-      if (err) {
-        res.send({error: 'Error in listing games'});
-      } else {
-        res.send(games);
-      }
+      return res.send(err ? err : games);
     });
   });
 
@@ -20,29 +16,44 @@ module.exports.controller = function(app) {
    * GET /games/:name - fetch a unique game
    */
   app.get('/games/:name', function(req, res) {
-    Game.find({name: req.params.name}, function(err, game) {
-      if (err || game.length != 1) {
-        res.send({error: 'Error in finding unique game: ' + req.params.name});
-      } else {
-        res.send(game[0]);
-      }
+    Game.findOne({name: req.params.name}, function(err, game) {
+      return res.send(err ? err : game);
     });
   });
   
   /**
    * POST /games - create a new game
    */
-  //app.post('/games', games.create);
+  app.post('/games', function(req, res) {
+    if (!req.body.friendlyName) {
+      return res.send({error: 'You must enter a friendly name for this game.'});
+    }
+
+    var game = new Game({
+      name: req.body.friendlyName.replace(/\s+/g, '-').replace(/[^a-zA-Z-]/g, '').toLowerCase(),
+      friendlyName: req.body.friendlyName
+    });
+
+    game.save(function(err, game) {
+      return res.send(err ? err : game);
+    });
+  });
   
   /**
    * PUT /games/:id - update a game
    */
-  //app.put('/games/:id', games.update);
+  app.put('/games/:name', function(req, res) {
+    Game.findOneAndUpdate({name: req.params.name}, req.body, function(err, game) {
+      return res.send(err ? err : game);
+    });
+  });
 
   /**
    * DELETE /games/:id - delete a game
    */
-  //app.delete('/games/:id', games.delete);
-
-  
+  app.delete('/games/:id', function(req, res) {
+    Game.findOneAndRemove({name: req.params.name}, function(err, game) {
+      return res.send(err ? err : game);
+    });
+  });
 };
