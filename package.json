@@ -14,6 +14,7 @@
     "jade": "*",
     "mongodb": "*",
     "mongoose": "*",
-    "twilio": "*"
+    "twilio": "*",
+    "elo-rank": "*"
   }
 }

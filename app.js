@@ -1,6 +1,7 @@
 // Dependencies
 var express = require('express');
 var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+var elo = require('elo-rank');
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
