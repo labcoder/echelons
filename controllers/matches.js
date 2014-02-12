@@ -25,10 +25,28 @@ module.exports.controller = function(app) {
   });
 
   /**
+   * GET /matches/games/:game/:user - fetch a list of a particular game by user
+   */
+  app.get('/matches/games/:game/:user', function(req, res) {
+    Match.find({game: req.params.game, $or: [{winnerUsername: req.params.user}, {loserUsername: req.params.user}]}, function(err, matches) {
+      return res.send(err ? err : matches);
+    });
+  });
+
+  /**
    * GET /matches/users/:user - fetch a list of matches a user has played
    */
   app.get('/matches/users/:user', function(req, res) {
-    Match.find({$or:[{winnerUsername: req.params.user}, {loserUsername: req.params.user}]}, function(err, matches) {
+    Match.find({$or: [{winnerUsername: req.params.user}, {loserUsername: req.params.user}]}, function(err, matches) {
+      return res.send(err ? err : matches);
+    });
+  });
+
+  /**
+   * GET /matches/users/:user1/:user2 - fetch a list of matches between users
+   */
+  app.get('/matches/users/:user1/:user2', function(req, res) {
+    Match.find({$or: [{winnerUsername: req.params.user1, loserUsername: req.params.user2}, {winnerUsername: req.params.user2, loserUsername: req.params.user1}]}, function(err, matches) {
       return res.send(err ? err : matches);
     });
   });

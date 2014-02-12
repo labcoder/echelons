@@ -8,7 +8,6 @@ There are a few different nouns:
 + [Games](#games)
 + [Users](#users)
 + [Matches](#matches)
-+ [Matchups](#matchups)
 
 ### Games
 
@@ -23,10 +22,6 @@ Users have identities and elo rankings for the different games they play.
 ### Matches
 
 A match is an instance of a game played by two (or more) users.
-
-### Matchups
-
-A matchup is a comparison between two users on a game
 
 ## To-do
 
