@@ -84,5 +84,4 @@ module.exports.controller = function(app) {
       return res.send(err ? err : match);
     });
   });
-
 }

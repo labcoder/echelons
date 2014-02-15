@@ -33,6 +33,10 @@ module.exports.controller = function(app) {
       friendlyName: req.body.friendlyName
     });
 
+    if (req.body.phone) {
+      game.phone = req.body.phone;
+    }
+
     game.save(function(err, game) {
       return res.send(err ? err : game);
     });
