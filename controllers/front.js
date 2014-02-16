@@ -196,6 +196,7 @@ module.exports.controller = function(app) {
         break;
       case "lose": // user has lost a game "lose, winnername, {scoreWin, scoreLose}"
         createMatch('lose', userNumber, gameNumber, textArray[1], textArray[2], textArray[3]);
+        break;
       default: // unrecognized command
         sendMessage(userNumber, gameNumber, 'Sorry, I do not understand that command: ' + command + ". Try one of {register, win, lose, leaderboards}");
         break;
