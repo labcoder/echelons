@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Match = require('../models/match');
 var User = require('../models/user');
 var Game = require('../models/game');
-var elo = require('elo-rank');
+var elo = require('elo-rank')(32);
 var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 var defaultScore = 1000;
 
@@ -18,11 +18,15 @@ var sendMessage = function(to, from, message) {
   });
 };
 
-var createUser = function(userNumber, gameNumber, name) {
+var createUser = function(userNumber, gameNumber, name, desiredUsername) {
   if (!name) {
     return sendMessage(userNumber, gameNumber, "Sorry, I need your name. Try again :]");
   }
   var username = name.split(' ')[0].trim().toLowerCase();
+  if (desiredUsername) {
+    username = desiredUsername.trim().toLowerCase();
+  }
+
   User.findOne({ $or: [{phoneNumber: userNumber}, {username: username}]}, function(err, user) {
     if (err) {
       console.log("ERROR:\n");
@@ -116,17 +120,39 @@ var createMatch = function(outcome, userNumber, gameNumber, opponentName, score1
             user.elos = {};
           }
           user.elos[game.name] = elo.updateRating(expectedUserScore, outcome == "win" ? 1 : 0, userScore);
+          user.markModified('elos');
 
           if (!opponent.elos) {
             opponent.elos = {};
           }
           opponent.elos[game.name] = elo.updateRating(expectedOpponentScore, outcome == "win" ? 0 : 1, opponentScore);
+          opponent.markModified('elos');
 
           user.save(function(err, user) { return; });
           opponent.save(function(err, opponent) { return; });
 
         } else {
-          return;
+          var userScore = (user.elos && user.elos[game.name]) ? user.elos[game.name] : defaultScore;
+          var opponentScore = defaultScore;
+
+          var expectedUserScore = elo.getExpected(userScore, opponentScore);
+          var expectedOpponentScore = elo.getExpected(opponentScore, userScore);
+
+          if (!user.elos) {
+            user.elos = {};
+          }
+          user.elos[game.name] = elo.updateRating(expectedUserScore, outcome == "win" ? 1 : 0, userScore);
+          user.markModified('elos');
+          user.save(function(err, user) { return; });
+
+          var opponentElos = {};
+          opponentElos[game.name] = elo.updateRating(expectedOpponentScore, outcome == "win" ? 0 : 1, opponentScore);
+          var opponent = new User({
+            username: opponentName,
+            fullName: opponentName,
+            elos: opponentElos
+          });
+          opponent.save(function(err, opponent) { return; });
         }
       });
 
@@ -162,8 +188,8 @@ module.exports.controller = function(app) {
 
     var command = textArray[0].toLowerCase();
     switch (command) {
-      case "register": // new user registration. "register, name"
-        createUser(userNumber, gameNumber, textArray[1]);
+      case "register": // new user registration. "register, name, {username}"
+        createUser(userNumber, gameNumber, textArray[1], textArray[2]);
         break;
       case "win": // user has won a game "win, losername, {scoreWin, scoreLose}"
         createMatch('win', userNumber, gameNumber, textArray[1], textArray[2], textArray[3]);
@@ -174,5 +200,7 @@ module.exports.controller = function(app) {
         sendMessage(userNumber, gameNumber, 'Sorry, I do not understand that command: ' + command + ". Try one of {register, win, lose, leaderboards}");
         break;
     }
+
+    return res.send({});
   });
 }
