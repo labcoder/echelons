@@ -103,6 +103,34 @@ var createMatch = function(outcome, userNumber, gameNumber, opponentName, score1
         match.loserScore = score2;
       }
 
+      // Do elo stuff
+      User.findOne({username: opponentName}, function(err, opponent) {
+        if (opponent) {
+          var userScore = (user.elos && user.elos[game.name]) ? user.elos[game.name] : defaultScore;
+          var opponentScore = (opponent.elos && opponent.elos[game.name]) ? opponent.elos[game.name] : defaultScore;
+
+          var expectedUserScore = elo.getExpected(userScore, opponentScore);
+          var expectedOpponentScore = elo.getExpected(opponentScore, userScore);
+
+          if (!user.elos) {
+            user.elos = {};
+          }
+          user.elos[game.name] = elo.updateRating(expectedUserScore, outcome == "win" ? 1 : 0, userScore);
+
+          if (!opponent.elos) {
+            opponent.elos = {};
+          }
+          opponent.elos[game.name] = elo.updateRating(expectedOpponentScore, outcome == "win" ? 0 : 1, opponentScore);
+
+          user.save(function(err, user) { return; });
+          opponent.save(function(err, opponent) { return; });
+
+        } else {
+          return;
+        }
+      });
+
+      // Persist the match
       match.save(function(err, match) {
         if (err) {
           console.log("ERROR:\n");
