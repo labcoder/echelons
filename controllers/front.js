@@ -36,7 +36,7 @@ var createUser = function(userNumber, gameNumber, name) {
       }
 
       if (!user.phone) { // we are assigning a number to this user for the first time
-        user.phoneNumber = userNumber;
+        user.phone = userNumber;
 
         user.save(function(err, user) {
           if (err) {
