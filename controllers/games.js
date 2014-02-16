@@ -1,11 +1,19 @@
 var mongoose = require('mongoose');
 var Game = require('../models/game');
+var express = require('express');
+
 module.exports.controller = function(app) {
+
+  // HTTP basic auth - add to route functions to apply
+  var auth = express.basicAuth(function(user, pass) {
+    return (user == process.env.ECHELONS_BASIC_AUTH_USER &&
+            pass == process.env.ECHELONS_BASIC_AUTH_PASS)
+  }, 'Sorry, you need proper credentials to see this.');
 
   /**
    * GET /games - fetch a list of games
    */
-  app.get('/games', function(req, res) {
+  app.get('/games', auth, function(req, res) {
     Game.find(function(err, games) {
       return res.send(err ? err : games);
     });
@@ -14,7 +22,7 @@ module.exports.controller = function(app) {
   /**
    * GET /games/:name - fetch a unique game
    */
-  app.get('/games/:name', function(req, res) {
+  app.get('/games/:name', auth, function(req, res) {
     Game.findOne({name: req.params.name}, function(err, game) {
       return res.send(err ? err : game);
     });
@@ -23,7 +31,7 @@ module.exports.controller = function(app) {
   /**
    * POST /games - create a new game
    */
-  app.post('/games', function(req, res) {
+  app.post('/games', auth, function(req, res) {
     if (!req.body.friendlyName) {
       return res.send({error: 'You must enter a friendly name for this game.'});
     }
@@ -45,7 +53,7 @@ module.exports.controller = function(app) {
   /**
    * PUT /games/:name - update a game
    */
-  app.put('/games/:name', function(req, res) {
+  app.put('/games/:name', auth, function(req, res) {
     Game.findOneAndUpdate({name: req.params.name}, req.body, function(err, game) {
       return res.send(err ? err : game);
     });
@@ -54,7 +62,7 @@ module.exports.controller = function(app) {
   /**
    * DELETE /games/:name - delete a game
    */
-  app.delete('/games/:name', function(req, res) {
+  app.delete('/games/:name', auth, function(req, res) {
     Game.findOneAndRemove({name: req.params.name}, function(err, game) {
       return res.send(err ? err : game);
     });
