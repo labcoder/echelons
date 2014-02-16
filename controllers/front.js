@@ -31,6 +31,18 @@ var createUser = function(userNumber, gameNumber, name) {
     }
 
     if (user) {
+      if (!user.phoneNumber) { // we are assigning a number to this user for the first time
+        user.phoneNumber = userNumber;
+
+        user.save(function(err, user) {
+          if (err) {
+            return sendMessage(userNumber, gameNumber, "Sorry, could not create your account");
+          }
+
+          return sendMessage(userNumber, gameNumber, "Awesome. Your games will now be recorded with username: " + user.username);
+        });
+      }
+
       if (user.phoneNumber == userNumber) {
         return sendMessage(userNumber, gameNumber, "This phone number is already registered to: " + user.fullName);
       } else {
