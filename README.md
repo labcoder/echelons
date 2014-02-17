@@ -1,7 +1,7 @@
 # Echelons
 
-A simple elo ranking application.
-Right now, I'm building an API for this. Eventually I will add a UI.
+A simple elo ranking application. This sets up the api and general framework,
+for a UI to use this with, checkout out [echelons-ui](https://github.com/labcoder/echelons-ui)
 
 There are a few different nouns:
 
@@ -87,5 +87,4 @@ elo rankings.
 
 ## To-do
 
-+ Make a UI for this - will be another repo
 + Figure out how to handle "doubles" games in a fair way.
