@@ -70,7 +70,20 @@ example assumed that Doug has username `doug`. What if he hasn't actually regist
 That's ok. As long as no one has the username you've entered, a new user will be
 created with an empty phone number. This will allow Doug to register himself
 with that username and he will then get all the matches propogated to him, including
-elo rankings. 
+elo rankings.
+
+### Running Locally
+
+1. This is a node app, so make sure you have node and npm
+1. This runs on a mongodb instance, so you'll need to set up mongodb locally as well
+1. `npm install` for the rest of the packages (I'd recommend also getting `npm install -g express` so it's global)
+1. Make sure you have the following environment variables set up:
+    + TWILIO_ACCOUNT_SID - The account sid that owns the numbers you'll be texting to/from
+    + TWILIO_AUTH_TOKEN - The auth token for the account that owns the numbers you'll be texting to/from
+    + ECHELONS_BASIC_AUTH_USER - The username that echelons will be performing basic auth against
+    + ECHELONS_BASIC_AUTH_PASS - The password that echelons will be performing basic auth against
+    + MONGOLAB_URI - The location of the database you're persisting to. If this is empty/not found, then echelons will default to the mongodb port running locally. If there is none, then it will break.
+1. `node app` to see it go
 
 ## To-do
 
