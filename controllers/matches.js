@@ -7,6 +7,15 @@ var defaultScore = 1000;
 module.exports.controller = function(app) {
 
   /**
+   * GET /matches - fetch all matches by date descending
+   */
+  app.get('/matches', function(req, res) {
+    Match.find({}).sort({date: -1}).exec(function(err, matches) {
+      return res.send(err ? err : matches);
+    });
+  });
+
+  /**
    * GET /matches/:id - fetch a match by its mongodb id
    */
   app.get('/matches/:id', function(req, res) {
