@@ -84,7 +84,3 @@ elo rankings.
     + ECHELONS_BASIC_AUTH_PASS - The password that echelons will be performing basic auth against
     + MONGOLAB_URI - The location of the database you're persisting to. If this is empty/not found, then echelons will default to the mongodb port running locally. If there is none, then it will break.
 1. `node app` to see it go
-
-## To-do
-
-+ Figure out how to handle "doubles" games in a fair way.
